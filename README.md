@@ -87,12 +87,17 @@ services:
       - ./searxng-cache:/var/cache/searxng:rw
     environment:
       - SEARXNG_BASE_URL=http://127.0.0.1:8080/
+      - SEARXNG_VALKEY_URL=valkey://redis:6379/0
 ```
 
 Create `searxng/settings.yml`:
 
 ```yaml
-use_default_settings: true
+use_default_settings:
+  engines:
+    keep_only:
+      - google
+      - yandex
 
 search:
   formats:
@@ -100,12 +105,16 @@ search:
     - json
 
 server:
-  secret_key: "replace-with-your-own-random-secret"
+  secret_key: "generate-your-own-random-secret"
   limiter: false
   image_proxy: true
+  port: 8080
 
-valkey:
-  url: redis://redis:6379/0
+engines:
+  - name: google
+    disabled: false
+  - name: yandex
+    disabled: false
 ```
 
 Start the stack:
@@ -124,7 +133,9 @@ Notes:
 
 - The plugin default URL is `http://127.0.0.1:8080`
 - `json` must be enabled in `search.formats`, otherwise the plugin will not work
-- Use your own random value for `server.secret_key`
+- Generate your own random value for `server.secret_key`
+- `use_default_settings.engines.keep_only` is the easiest way to keep only the engines you want
+- `yandex` is supported by SearXNG and can be enabled like any other engine by name
 
 ## Configuration
 
@@ -317,3 +328,34 @@ searxng.search failed: <error message>
 ```
 
 On Windows, logs are typically written to `%TEMP%\openclaw\`.
+
+### HTML Search Works But JSON Fails With 403
+
+If this works:
+
+```bash
+curl "http://127.0.0.1:8080/search?q=test"
+```
+
+but this returns `403`:
+
+```bash
+curl "http://127.0.0.1:8080/search?q=test&format=json"
+```
+
+then `json` is not enabled in SearXNG.
+
+Make sure your `searxng/settings.yml` contains:
+
+```yaml
+search:
+  formats:
+    - html
+    - json
+```
+
+Then restart the container:
+
+```bash
+docker compose restart searxng
+```
