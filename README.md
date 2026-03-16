@@ -50,6 +50,82 @@ Enable the plugin and explicitly allow the tool in `openclaw.json`:
 
 Restart the OpenClaw gateway after installation or configuration changes.
 
+## Run SearXNG with Docker
+
+If you do not already have a SearXNG instance, you can run one locally with Docker Compose.
+
+Create a directory for SearXNG, for example:
+
+```bash
+mkdir searxng-docker
+cd searxng-docker
+mkdir searxng valkey-data searxng-cache
+```
+
+Create `docker-compose.yml`:
+
+```yaml
+services:
+  redis:
+    image: docker.io/valkey/valkey:8-alpine
+    container_name: searxng-redis
+    command: valkey-server --save 30 1 --loglevel warning
+    restart: unless-stopped
+    volumes:
+      - ./valkey-data:/data
+
+  searxng:
+    image: docker.io/searxng/searxng:latest
+    container_name: searxng
+    restart: unless-stopped
+    depends_on:
+      - redis
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - ./searxng:/etc/searxng:rw
+      - ./searxng-cache:/var/cache/searxng:rw
+    environment:
+      - SEARXNG_BASE_URL=http://127.0.0.1:8080/
+```
+
+Create `searxng/settings.yml`:
+
+```yaml
+use_default_settings: true
+
+search:
+  formats:
+    - html
+    - json
+
+server:
+  secret_key: "replace-with-your-own-random-secret"
+  limiter: false
+  image_proxy: true
+
+valkey:
+  url: redis://redis:6379/0
+```
+
+Start the stack:
+
+```bash
+docker compose up -d
+```
+
+Verify that SearXNG responds on the default plugin URL:
+
+```bash
+curl "http://127.0.0.1:8080/search?q=test&format=json"
+```
+
+Notes:
+
+- The plugin default URL is `http://127.0.0.1:8080`
+- `json` must be enabled in `search.formats`, otherwise the plugin will not work
+- Use your own random value for `server.secret_key`
+
 ## Configuration
 
 ### Environment Variable
