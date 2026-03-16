@@ -1,0 +1,13 @@
+{
+  "name": "searxng",
+  "version": "1.0.0",
+  "description": "OpenClaw native plugin for web search via local SearXNG",
+  "type": "module",
+  "main": "index.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "openclaw": {
+    "extensions": ["./index.js"]
+  }
+}

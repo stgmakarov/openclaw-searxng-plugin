@@ -1,0 +1,16 @@
+{
+  "id": "searxng",
+  "name": "SearXNG Search",
+  "description": "Web search via local SearXNG instance. Configure SEARXNG_BASE_URL (default: http://127.0.0.1:8080).",
+  "version": "1.0.0",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "baseUrl": {
+        "type": "string",
+        "description": "SearXNG base URL. Overrides SEARXNG_BASE_URL env."
+      }
+    }
+  }
+}
