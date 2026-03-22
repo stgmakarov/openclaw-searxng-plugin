@@ -7,9 +7,9 @@
 const DEFAULT_BASE_URL = "http://127.0.0.1:8080";
 const HTTP_TIMEOUT_MS = 10_000;
 const SEARXNG_AGENT_GUIDANCE = [
-  "For web search and fresh/current information, prefer the `searxng.search` tool.",
-  "Do not fall back to the built-in `web_search` tool when `searxng.search` is available, because `web_search` may require a Brave API key.",
-  "Use `searxng.search` for docs, news, factual lookup, and general internet research.",
+  "For web search and fresh/current information, prefer the `searxng_search` tool.",
+  "Do not fall back to the built-in `web_search` tool when `searxng_search` is available, because `web_search` may require a Brave API key.",
+  "Use `searxng_search` for docs, news, factual lookup, and general internet research.",
 ].join(" ");
 
 /**
@@ -118,7 +118,7 @@ export default function register(api) {
 
   api.registerTool(
     {
-      name: "searxng.search",
+      name: "searxng_search",
       label: "SearXNG Search",
       description:
         "Search the web via local SearXNG. Returns structured JSON with title, url, content, engine. Use for finding current info, docs, news.",
@@ -193,7 +193,7 @@ export default function register(api) {
           };
         } catch (err) {
           const msg = err instanceof Error ? err.message : String(err);
-          api.logger?.warn?.("searxng.search failed:", msg);
+          api.logger?.warn?.("searxng_search failed:", msg);
           const errorPayload = {
             error: msg,
             query,
