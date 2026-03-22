@@ -6,7 +6,7 @@ It sends requests directly from OpenClaw to SearXNG over HTTP and returns normal
 
 ## Features
 
-- Adds the `searxng.search` tool to OpenClaw
+- Adds the `searxng_search` tool to OpenClaw
 - Works with local and remote SearXNG instances
 - Returns compact structured JSON suitable for LLM use
 - Supports `query`, `limit`, `categories`, `language`, `time_range`, and `safesearch`
@@ -43,7 +43,7 @@ Enable the plugin and explicitly allow the tool in `openclaw.json`:
   },
   "tools": {
     "profile": "coding",
-    "alsoAllow": ["searxng", "searxng.search"]
+    "alsoAllow": ["searxng", "searxng_search"]
   }
 }
 ```
@@ -168,7 +168,7 @@ Plugin configuration lives under `plugins.entries.searxng.config`:
 
 ## Tool Reference
 
-### `searxng.search`
+### `searxng_search`
 
 Search the web through SearXNG and return normalized JSON.
 
@@ -238,7 +238,7 @@ curl "http://127.0.0.1:8080/search?q=test&format=json"
 openclaw plugins info searxng
 ```
 
-Expected result: the plugin is loaded and exposes `searxng.search`.
+Expected result: the plugin is loaded and exposes `searxng_search`.
 
 ### 3. Run the Smoke Test
 
@@ -324,7 +324,7 @@ set SEARXNG_BASE_URL=http://127.0.0.1:5000
 Check OpenClaw logs for messages like:
 
 ```text
-searxng.search failed: <error message>
+searxng_search failed: <error message>
 ```
 
 On Windows, logs are typically written to `%TEMP%\openclaw\`.
